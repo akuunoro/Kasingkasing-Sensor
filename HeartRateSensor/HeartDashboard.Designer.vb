@@ -22,11 +22,31 @@ Partial Class HeartDashboard
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Me.lb_title = New System.Windows.Forms.Label()
         Me.btn_exit = New FontAwesome.Sharp.IconButton()
         Me.btn_maximize = New FontAwesome.Sharp.IconButton()
         Me.btn_minimize = New FontAwesome.Sharp.IconButton()
         Me.btn_icon = New System.Windows.Forms.Button()
+        Me.dtp_savedate = New System.Windows.Forms.DateTimePicker()
+        Me.dgv_patients = New System.Windows.Forms.DataGridView()
+        Me.chart_bpm = New System.Windows.Forms.DataVisualization.Charting.Chart()
+        Me.lbl_bpm = New System.Windows.Forms.Label()
+        Me.btn_startread = New FontAwesome.Sharp.IconButton()
+        Me.btn_save = New FontAwesome.Sharp.IconButton()
+        Me.btn_clear = New FontAwesome.Sharp.IconButton()
+        Me.txt_name = New System.Windows.Forms.TextBox()
+        Me.txt_age = New System.Windows.Forms.TextBox()
+        Me.txt_address = New System.Windows.Forms.TextBox()
+        Me.lbl_name = New System.Windows.Forms.Label()
+        Me.lbl_age = New System.Windows.Forms.Label()
+        Me.lbl_address = New System.Windows.Forms.Label()
+        Me.serial_port_heart = New System.IO.Ports.SerialPort(Me.components)
+        CType(Me.dgv_patients, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chart_bpm, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'lb_title
@@ -101,6 +121,171 @@ Partial Class HeartDashboard
         Me.btn_icon.TabIndex = 16
         Me.btn_icon.UseVisualStyleBackColor = False
         '
+        'dtp_savedate
+        '
+        Me.dtp_savedate.CalendarFont = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.dtp_savedate.CalendarForeColor = System.Drawing.Color.Cyan
+        Me.dtp_savedate.CalendarMonthBackground = System.Drawing.Color.DarkSlateBlue
+        Me.dtp_savedate.CalendarTitleBackColor = System.Drawing.SystemColors.GrayText
+        Me.dtp_savedate.CalendarTitleForeColor = System.Drawing.Color.Cyan
+        Me.dtp_savedate.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.dtp_savedate.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtp_savedate.Location = New System.Drawing.Point(838, 67)
+        Me.dtp_savedate.Name = "dtp_savedate"
+        Me.dtp_savedate.Size = New System.Drawing.Size(132, 30)
+        Me.dtp_savedate.TabIndex = 17
+        '
+        'dgv_patients
+        '
+        Me.dgv_patients.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgv_patients.Location = New System.Drawing.Point(596, 321)
+        Me.dgv_patients.Name = "dgv_patients"
+        Me.dgv_patients.RowHeadersWidth = 51
+        Me.dgv_patients.RowTemplate.Height = 24
+        Me.dgv_patients.Size = New System.Drawing.Size(374, 220)
+        Me.dgv_patients.TabIndex = 18
+        '
+        'chart_bpm
+        '
+        ChartArea2.Name = "ChartArea1"
+        Me.chart_bpm.ChartAreas.Add(ChartArea2)
+        Legend2.Name = "Legend1"
+        Me.chart_bpm.Legends.Add(Legend2)
+        Me.chart_bpm.Location = New System.Drawing.Point(26, 100)
+        Me.chart_bpm.Name = "chart_bpm"
+        Series2.ChartArea = "ChartArea1"
+        Series2.Legend = "Legend1"
+        Series2.Name = "Series1"
+        Me.chart_bpm.Series.Add(Series2)
+        Me.chart_bpm.Size = New System.Drawing.Size(545, 436)
+        Me.chart_bpm.TabIndex = 19
+        Me.chart_bpm.Text = "Chart1"
+        '
+        'lbl_bpm
+        '
+        Me.lbl_bpm.AutoSize = True
+        Me.lbl_bpm.BackColor = System.Drawing.Color.DarkSlateBlue
+        Me.lbl_bpm.Font = New System.Drawing.Font("Arial", 13.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbl_bpm.ForeColor = System.Drawing.Color.Cyan
+        Me.lbl_bpm.Location = New System.Drawing.Point(21, 67)
+        Me.lbl_bpm.Name = "lbl_bpm"
+        Me.lbl_bpm.Size = New System.Drawing.Size(59, 27)
+        Me.lbl_bpm.TabIndex = 20
+        Me.lbl_bpm.Text = "bpm"
+        '
+        'btn_startread
+        '
+        Me.btn_startread.BackColor = System.Drawing.Color.DarkSlateBlue
+        Me.btn_startread.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btn_startread.ForeColor = System.Drawing.Color.BlueViolet
+        Me.btn_startread.IconChar = FontAwesome.Sharp.IconChar.Heartbeat
+        Me.btn_startread.IconColor = System.Drawing.Color.Red
+        Me.btn_startread.IconFont = FontAwesome.Sharp.IconFont.Solid
+        Me.btn_startread.Location = New System.Drawing.Point(473, 53)
+        Me.btn_startread.Name = "btn_startread"
+        Me.btn_startread.Size = New System.Drawing.Size(98, 41)
+        Me.btn_startread.TabIndex = 21
+        Me.btn_startread.UseVisualStyleBackColor = False
+        '
+        'btn_save
+        '
+        Me.btn_save.BackColor = System.Drawing.Color.DarkSlateBlue
+        Me.btn_save.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btn_save.ForeColor = System.Drawing.Color.BlueViolet
+        Me.btn_save.IconChar = FontAwesome.Sharp.IconChar.CalendarPlus
+        Me.btn_save.IconColor = System.Drawing.Color.LimeGreen
+        Me.btn_save.IconFont = FontAwesome.Sharp.IconFont.Solid
+        Me.btn_save.IconSize = 30
+        Me.btn_save.Location = New System.Drawing.Point(596, 53)
+        Me.btn_save.Name = "btn_save"
+        Me.btn_save.Size = New System.Drawing.Size(72, 44)
+        Me.btn_save.TabIndex = 22
+        Me.btn_save.UseVisualStyleBackColor = False
+        '
+        'btn_clear
+        '
+        Me.btn_clear.BackColor = System.Drawing.Color.DarkSlateBlue
+        Me.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btn_clear.ForeColor = System.Drawing.Color.BlueViolet
+        Me.btn_clear.IconChar = FontAwesome.Sharp.IconChar.X
+        Me.btn_clear.IconColor = System.Drawing.Color.LimeGreen
+        Me.btn_clear.IconFont = FontAwesome.Sharp.IconFont.Solid
+        Me.btn_clear.IconSize = 30
+        Me.btn_clear.Location = New System.Drawing.Point(680, 53)
+        Me.btn_clear.Name = "btn_clear"
+        Me.btn_clear.Size = New System.Drawing.Size(72, 44)
+        Me.btn_clear.TabIndex = 23
+        Me.btn_clear.UseVisualStyleBackColor = False
+        '
+        'txt_name
+        '
+        Me.txt_name.BackColor = System.Drawing.Color.DarkSlateBlue
+        Me.txt_name.Font = New System.Drawing.Font("Arial", 13.8!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txt_name.ForeColor = System.Drawing.Color.Cyan
+        Me.txt_name.Location = New System.Drawing.Point(596, 136)
+        Me.txt_name.Name = "txt_name"
+        Me.txt_name.Size = New System.Drawing.Size(374, 34)
+        Me.txt_name.TabIndex = 24
+        '
+        'txt_age
+        '
+        Me.txt_age.BackColor = System.Drawing.Color.DarkSlateBlue
+        Me.txt_age.Font = New System.Drawing.Font("Arial", 13.8!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txt_age.ForeColor = System.Drawing.Color.Cyan
+        Me.txt_age.Location = New System.Drawing.Point(596, 203)
+        Me.txt_age.Name = "txt_age"
+        Me.txt_age.Size = New System.Drawing.Size(374, 34)
+        Me.txt_age.TabIndex = 25
+        '
+        'txt_address
+        '
+        Me.txt_address.BackColor = System.Drawing.Color.DarkSlateBlue
+        Me.txt_address.Font = New System.Drawing.Font("Arial", 13.8!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txt_address.ForeColor = System.Drawing.Color.Cyan
+        Me.txt_address.Location = New System.Drawing.Point(596, 270)
+        Me.txt_address.Name = "txt_address"
+        Me.txt_address.Size = New System.Drawing.Size(374, 34)
+        Me.txt_address.TabIndex = 26
+        '
+        'lbl_name
+        '
+        Me.lbl_name.AutoSize = True
+        Me.lbl_name.BackColor = System.Drawing.Color.DarkSlateBlue
+        Me.lbl_name.Font = New System.Drawing.Font("Arial", 13.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbl_name.ForeColor = System.Drawing.Color.Cyan
+        Me.lbl_name.Location = New System.Drawing.Point(591, 106)
+        Me.lbl_name.Name = "lbl_name"
+        Me.lbl_name.Size = New System.Drawing.Size(81, 27)
+        Me.lbl_name.TabIndex = 27
+        Me.lbl_name.Text = "Name:"
+        '
+        'lbl_age
+        '
+        Me.lbl_age.AutoSize = True
+        Me.lbl_age.BackColor = System.Drawing.Color.DarkSlateBlue
+        Me.lbl_age.Font = New System.Drawing.Font("Arial", 13.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbl_age.ForeColor = System.Drawing.Color.Cyan
+        Me.lbl_age.Location = New System.Drawing.Point(591, 173)
+        Me.lbl_age.Name = "lbl_age"
+        Me.lbl_age.Size = New System.Drawing.Size(63, 27)
+        Me.lbl_age.TabIndex = 28
+        Me.lbl_age.Text = "Age:"
+        '
+        'lbl_address
+        '
+        Me.lbl_address.AutoSize = True
+        Me.lbl_address.BackColor = System.Drawing.Color.DarkSlateBlue
+        Me.lbl_address.Font = New System.Drawing.Font("Arial", 13.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbl_address.ForeColor = System.Drawing.Color.Cyan
+        Me.lbl_address.Location = New System.Drawing.Point(591, 240)
+        Me.lbl_address.Name = "lbl_address"
+        Me.lbl_address.Size = New System.Drawing.Size(112, 27)
+        Me.lbl_address.TabIndex = 29
+        Me.lbl_address.Text = "Address:"
+        '
+        'serial_port_heart
+        '
+        '
         'HeartDashboard
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -108,6 +293,19 @@ Partial Class HeartDashboard
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.Color.DarkSlateBlue
         Me.ClientSize = New System.Drawing.Size(982, 553)
+        Me.Controls.Add(Me.lbl_address)
+        Me.Controls.Add(Me.lbl_age)
+        Me.Controls.Add(Me.lbl_name)
+        Me.Controls.Add(Me.txt_address)
+        Me.Controls.Add(Me.txt_age)
+        Me.Controls.Add(Me.txt_name)
+        Me.Controls.Add(Me.btn_clear)
+        Me.Controls.Add(Me.btn_save)
+        Me.Controls.Add(Me.btn_startread)
+        Me.Controls.Add(Me.lbl_bpm)
+        Me.Controls.Add(Me.chart_bpm)
+        Me.Controls.Add(Me.dgv_patients)
+        Me.Controls.Add(Me.dtp_savedate)
         Me.Controls.Add(Me.btn_icon)
         Me.Controls.Add(Me.lb_title)
         Me.Controls.Add(Me.btn_exit)
@@ -115,7 +313,10 @@ Partial Class HeartDashboard
         Me.Controls.Add(Me.btn_minimize)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "HeartDashboard"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "HeartDashboard"
+        CType(Me.dgv_patients, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chart_bpm, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -126,4 +327,18 @@ Partial Class HeartDashboard
     Friend WithEvents btn_minimize As FontAwesome.Sharp.IconButton
     Friend WithEvents lb_title As Label
     Friend WithEvents btn_icon As Button
+    Friend WithEvents dtp_savedate As DateTimePicker
+    Friend WithEvents dgv_patients As DataGridView
+    Friend WithEvents chart_bpm As DataVisualization.Charting.Chart
+    Friend WithEvents lbl_bpm As Label
+    Friend WithEvents btn_startread As FontAwesome.Sharp.IconButton
+    Friend WithEvents btn_save As FontAwesome.Sharp.IconButton
+    Friend WithEvents btn_clear As FontAwesome.Sharp.IconButton
+    Friend WithEvents txt_name As TextBox
+    Friend WithEvents txt_age As TextBox
+    Friend WithEvents txt_address As TextBox
+    Friend WithEvents lbl_name As Label
+    Friend WithEvents lbl_age As Label
+    Friend WithEvents lbl_address As Label
+    Friend WithEvents serial_port_heart As IO.Ports.SerialPort
 End Class
