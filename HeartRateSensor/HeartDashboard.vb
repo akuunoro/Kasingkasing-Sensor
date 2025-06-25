@@ -24,10 +24,10 @@ Public Class HeartDashboard
         End With
 
         Try
+            serial_port_heart.PortName = "COM5"   ' Set port name before opening
+            serial_port_heart.BaudRate = 9600     ' Set baud rate before opening
             If Not serial_port_heart.IsOpen Then
                 serial_port_heart.Open()
-                serial_port_heart.PortName = "COM3"   'CHANGE THIS TO PORT NAME IN ARDUINO
-                serial_port_heart.BaudRate = 9600     'CHANGE TO SET PORT
             End If
         Catch ex As Exception
             MessageBox.Show("Error opening serial port: " & ex.Message)
@@ -43,22 +43,28 @@ Public Class HeartDashboard
         lbl_bpm.Text = "BPM: --"
         dtp_savedate.Value = DateTime.Now
         LoadPatientRecords()
-
-
     End Sub
-
 
     Private Sub serial_port_heart_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles serial_port_heart.DataReceived
         Try
             Dim data As String = serial_port_heart.ReadLine().Trim()
-            If Integer.TryParse(data, currentBPM) Then
-                Me.Invoke(Sub()
-                              lbl_bpm.Text = "BPM: " & currentBPM.ToString()
-                              chart_bpm.Series("BPM").Points.AddY(currentBPM)
-                          End Sub)
+            Dim parts = data.Split(","c)
+
+            If parts.Length = 2 Then
+                Dim bpmVal As Integer
+
+                If Integer.TryParse(parts(0), bpmVal) Then
+                    currentBPM = bpmVal
+                    Dim status As String = parts(1)
+
+                    Me.Invoke(Sub()
+                                  lbl_bpm.Text = $"BPM: {currentBPM} ({status})"
+                                  chart_bpm.Series("BPM").Points.AddY(currentBPM)
+                              End Sub)
+                End If
             End If
         Catch ex As Exception
-
+            MessageBox.Show("Error reading from serial: " & ex.Message)
         End Try
     End Sub
 
@@ -74,7 +80,6 @@ Public Class HeartDashboard
             MessageBox.Show("Already reading.")
         End If
     End Sub
-
 
     Private Sub btn_save_Click(sender As Object, e As EventArgs) Handles btn_save.Click
         If txt_name.Text = "" Or txt_age.Text = "" Or txt_address.Text = "" Then
@@ -147,7 +152,6 @@ Public Class HeartDashboard
             txt_address.Text = row.Cells(2).Value.ToString()
             dtp_savedate.Value = DateTime.Parse(row.Cells(3).Value.ToString())
 
-
             chart_bpm.Series("BPM").Points.Clear()
             Dim bpmValues = row.Cells(4).Value.ToString().Split(","c)
             For Each bpm In bpmValues
@@ -156,19 +160,11 @@ Public Class HeartDashboard
                 End If
             Next
 
-
             lbl_bpm.Text = "BPM: " & bpmValues.Last()
         End If
     End Sub
 
-
-
-
-
-
     Private Sub rounded_btn(ParamArray btnArr() As Button)
-
-
         For Each btn As Button In btnArr
             btn.FlatStyle = FlatStyle.Flat
             btn.FlatAppearance.BorderSize = 0
@@ -223,7 +219,6 @@ Public Class HeartDashboard
             Dim iconBtn As FontAwesome.Sharp.IconButton = CType(btn, FontAwesome.Sharp.IconButton)
             iconBtn.IconColor = Color.Cyan
 
-
             AddHandler btn.MouseEnter, Sub(s, e)
                                            btn.ForeColor = Color.Black
                                            iconBtn.IconColor = Color.Black
@@ -261,10 +256,11 @@ Public Class HeartDashboard
         Me.WindowState = FormWindowState.Minimized
     End Sub
 
+    Private Sub dgv_patients_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv_patients.CellContentClick
 
+    End Sub
 
+    Private Sub chart_bpm_Click(sender As Object, e As EventArgs) Handles chart_bpm.Click
 
-
-
-
+    End Sub
 End Class
