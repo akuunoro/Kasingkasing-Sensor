@@ -1,4 +1,5 @@
-﻿
+﻿'NIGGA
+
 Imports System.IO.Ports
 Imports System.IO
 Public Class HeartDashboard
