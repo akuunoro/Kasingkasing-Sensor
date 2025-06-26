@@ -6,12 +6,9 @@ Public Class HeartDashboard
     Dim currentBPM As Integer = 0
     Dim csvPath As String = "patients.csv"
 
-
-
     Private Sub HeartDashboard_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         rounded_btn()
         rounded_utils(btn_exit, btn_maximize, btn_minimize)
-
 
         With dtp_savedate
             .CalendarMonthBackground = Color.Indigo
@@ -25,7 +22,7 @@ Public Class HeartDashboard
         End With
 
         Try
-            serial_port_heart.PortName = "COM5"   ' Set port name before opening
+            serial_port_heart.PortName = "COM6"   ' Set port name before opening
             serial_port_heart.BaudRate = 9600     ' Set baud rate before opening
             If Not serial_port_heart.IsOpen Then
                 serial_port_heart.Open()
@@ -127,7 +124,10 @@ Public Class HeartDashboard
         dgv_patients.Rows.Clear()
         dgv_patients.Columns.Clear()
 
-        If Not File.Exists(csvPath) Then Return
+        If Not File.Exists(csvPath) Then
+            MessageBox.Show("There's no more patients in the record.")
+            Return
+        End If
 
         dgv_patients.Columns.Add("Name", "Name")
         dgv_patients.Columns.Add("Age", "Age")
@@ -136,32 +136,67 @@ Public Class HeartDashboard
         dgv_patients.Columns.Add("BPMs", "BPMs")
 
         Dim lines = File.ReadAllLines(csvPath)
+
+        ' Check if file is empty or has no valid records
+        Dim validRecords As Integer = 0
+
         For Each line As String In lines
-            Dim fields = line.Split(","c)
-            If fields.Length >= 5 Then
-                Dim bpmValues As String = String.Join(",", fields.Skip(4))
-                dgv_patients.Rows.Add(fields(0), fields(1), fields(2), fields(3), bpmValues)
+            If Not String.IsNullOrWhiteSpace(line) Then
+                Dim fields = line.Split(","c)
+                If fields.Length >= 5 Then
+                    Dim bpmValues As String = String.Join(",", fields.Skip(4))
+                    dgv_patients.Rows.Add(fields(0), fields(1), fields(2), fields(3), bpmValues)
+                    validRecords += 1
+                End If
             End If
         Next
+
+        ' Show message if no valid records found
+        If validRecords = 0 Then
+            MessageBox.Show("There's no more patients in the record.")
+        End If
     End Sub
 
     Private Sub dgv_patients_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv_patients.CellClick
-        If e.RowIndex >= 0 Then
-            Dim row = dgv_patients.Rows(e.RowIndex)
-            txt_name.Text = row.Cells(0).Value.ToString()
-            txt_age.Text = row.Cells(1).Value.ToString()
-            txt_address.Text = row.Cells(2).Value.ToString()
-            dtp_savedate.Value = DateTime.Parse(row.Cells(3).Value.ToString())
+        ' Check if there are any rows in the DataGridView
+        If dgv_patients.Rows.Count = 0 Then
+            MessageBox.Show("There's no more patients in the record.")
+            Return
+        End If
 
-            chart_bpm.Series("BPM").Points.Clear()
-            Dim bpmValues = row.Cells(4).Value.ToString().Split(","c)
-            For Each bpm In bpmValues
-                If Integer.TryParse(bpm, Nothing) Then
-                    chart_bpm.Series("BPM").Points.AddY(CInt(bpm))
+        If e.RowIndex >= 0 And e.RowIndex < dgv_patients.Rows.Count Then
+            Try
+                Dim row = dgv_patients.Rows(e.RowIndex)
+
+                ' Check if all required cells have values
+                If row.Cells(0).Value Is Nothing Or row.Cells(1).Value Is Nothing Or
+                   row.Cells(2).Value Is Nothing Or row.Cells(3).Value Is Nothing Or
+                   row.Cells(4).Value Is Nothing Then
+                    MessageBox.Show("Invalid patient record data.")
+                    Return
                 End If
-            Next
 
-            lbl_bpm.Text = "BPM: " & bpmValues.Last()
+                txt_name.Text = row.Cells(0).Value.ToString()
+                txt_age.Text = row.Cells(1).Value.ToString()
+                txt_address.Text = row.Cells(2).Value.ToString()
+                dtp_savedate.Value = DateTime.Parse(row.Cells(3).Value.ToString())
+
+                chart_bpm.Series("BPM").Points.Clear()
+                Dim bpmValues = row.Cells(4).Value.ToString().Split(","c)
+                For Each bpm In bpmValues
+                    If Integer.TryParse(bpm.Trim(), Nothing) Then
+                        chart_bpm.Series("BPM").Points.AddY(CInt(bpm.Trim()))
+                    End If
+                Next
+
+                If bpmValues.Length > 0 Then
+                    lbl_bpm.Text = "BPM: " & bpmValues.Last().Trim()
+                Else
+                    lbl_bpm.Text = "BPM: --"
+                End If
+            Catch ex As Exception
+                MessageBox.Show("Error loading patient record: " & ex.Message)
+            End Try
         End If
     End Sub
 
@@ -206,7 +241,6 @@ Public Class HeartDashboard
     End Sub
 
     Private Sub rounded_utils(ParamArray btnArr1() As Button)
-
         For Each btn As Button In btnArr1
             btn.FlatStyle = FlatStyle.Flat
             btn.FlatAppearance.BorderSize = 0
@@ -236,10 +270,8 @@ Public Class HeartDashboard
                                         btn.ForeColor = Color.Cyan
                                         iconBtn.IconColor = Color.Cyan
                                     End Sub
-
         Next
     End Sub
-
 
     Private Sub Btn_exit_Click(sender As Object, e As EventArgs) Handles btn_exit.Click
         Application.Exit()
@@ -258,10 +290,8 @@ Public Class HeartDashboard
     End Sub
 
     Private Sub dgv_patients_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv_patients.CellContentClick
-
     End Sub
 
     Private Sub chart_bpm_Click(sender As Object, e As EventArgs) Handles chart_bpm.Click
-
     End Sub
 End Class
